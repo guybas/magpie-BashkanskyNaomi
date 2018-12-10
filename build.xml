@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="Magpie" default="main">
+<project name="MagpieRunner" default="main">
 
     <property name="build.dir"         value="build" />
     <property name="classes.dir"       value="${build.dir}/classes" />
