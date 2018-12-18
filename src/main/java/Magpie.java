@@ -53,6 +53,16 @@ public class Magpie
 		{
 			response = transformIWantToStatement(statement);
 		}
+		else if (findKeyword(statement, "I want", 0) >= 0)
+		{
+			response = transformIWantStatement(statement);
+		}
+		else if (findKeyword(statement, "I", 0) >= 0
+				&& findKeyword(statement, "you", 0) >= 0
+				&& findKeyword(statement, "you", 0) > findKeyword(statement, "I", 0))
+		{
+			response = transformIYouStatement(statement);
+		}
 
 		else
 		{
@@ -65,6 +75,7 @@ public class Magpie
 			{
 				response = transformYouMeStatement(statement);
 			}
+			
 			else
 			{
 				response = getRandomResponse();
@@ -79,6 +90,30 @@ public class Magpie
 	 * @param statement the user statement, assumed to contain "I want to"
 	 * @return the transformed statement
 	 */
+	private String transformIWantStatement(String statement)
+	{
+		//  Remove the final period, if there is one
+		statement = statement.trim();
+		String lastChar = statement.substring(statement
+				.length() - 1);
+		if (lastChar.equals("."))
+		{
+			statement = statement.substring(0, statement
+					.length() - 1);
+		}
+		int psn = findKeyword (statement, "I want ", 0);
+		String restOfStatement = statement.substring(psn + 8).trim();
+		if (restOfStatement.equals("you"))
+		{
+			restOfStatement = "me";
+		}
+		else if (restOfStatement.equals("me"))
+		{
+			restOfStatement = "you";
+		}
+		return "Would you really be happy if you had " + restOfStatement + "?";
+	}
+	
 	private String transformIWantToStatement(String statement)
 	{
 		//  Remove the final period, if there is one
@@ -93,9 +128,7 @@ public class Magpie
 		int psn = findKeyword (statement, "I want to", 0);
 		String restOfStatement = statement.substring(psn + 9).trim();
 		return "What would it mean to " + restOfStatement + "?";
-	}
-
-	
+	}	
 	
 	/**
 	 * Take a statement with "you <something> me" and transform it into 
@@ -103,6 +136,24 @@ public class Magpie
 	 * @param statement the user statement, assumed to contain "you" followed by "me"
 	 * @return the transformed statement
 	 */
+	private String transformIYouStatement(String statement)
+	{
+		//  Remove the final period, if there is one
+		statement = statement.trim();
+		String lastChar = statement.substring(statement
+				.length() - 1);
+		if (lastChar.equals("."))
+		{
+			statement = statement.substring(0, statement
+					.length() - 1);
+		}
+		
+		int psnOfI = findKeyword (statement, "I", 0);
+		int psnOfYou = findKeyword (statement, "you", 0);
+		String restOfStatement=statement.substring(psnOfI + 2, psnOfYou-1);
+		return "What makes you " + restOfStatement + " me?";
+	}
+	
 	private String transformYouMeStatement(String statement)
 	{
 		//  Remove the final period, if there is one
